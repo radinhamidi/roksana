@@ -1,0 +1,192 @@
+@startuml class_diagram
+
+title ROKSANA Class Diagram
+
+scale 0.8
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor White
+skinparam noteBackgroundColor White
+skinparam packageBackgroundColor White
+
+'=========================================================
+' Search Methods
+'=========================================================
+package "search_methods" {
+    interface SearchMethod {
+        +__init__(data, device=None, **kwargs)
+        +search(query_features, top_k=10) : List[int]
+    }
+
+    class GCNSearch {
+        +__init__(data, device=None, hidden_channels=64, epochs=200, lr=0.01)
+        +train_model()
+        +evaluate() : float
+        +get_node_embeddings() : torch.Tensor
+        +search(query_features, top_k=10) : List[int]
+    }
+
+    class GATSearch {
+        +__init__(data, device=None, hidden_channels=64, heads=8, epochs=200, lr=0.005)
+        +train_model()
+        +evaluate() : float
+        +get_node_embeddings() : torch.Tensor
+        +search(query_features, top_k=10) : List[int]
+    }
+
+    class SAGESearch {
+        +__init__(data, device=None, hidden_channels=64, epochs=200, lr=0.01)
+        +train_model()
+        +evaluate() : float
+        +get_node_embeddings() : torch.Tensor
+        +search(query_features, top_k=10) : List[int]
+    }
+
+    class SearchRegistry {
+        +get_search_method(name: str, data, device=None, **kwargs) : SearchMethod
+    }
+
+    SearchMethod <|-- GCNSearch
+    SearchMethod <|-- GATSearch
+    SearchMethod <|-- SAGESearch
+}
+' Close search_methods package before referencing outside elements
+
+'=========================================================
+' Attack Methods
+'=========================================================
+package "attack_methods" {
+    interface AttackMethod {
+        +__init__(data, **kwargs)
+        +attack(query_node: int, perturbations: int=1) : Dict[str, Any]
+    }
+
+    class degree {
+        +__init__(data, perturbations=1, **kwargs)
+        +attack(query_node: int, perturbations=1) : Dict[str, Any]
+    }
+
+    class pagerank {
+        +__init__(data, perturbations=1, **kwargs)
+        +attack(query_node: int, perturbations=1) : Dict[str, Any]
+    }
+
+    class random {
+        +__init__(data, perturbations=1, **kwargs)
+        +attack(query_node: int, perturbations=1) : Dict[str, Any]
+    }
+
+    class viking {
+        +__init__(data, perturbations=1, **kwargs)
+        +attack(query_node: int, perturbations=1) : Dict[str, Any]
+    }
+
+    class AttackRegistry {
+        +get_attack_method(name: str, data, **kwargs) : AttackMethod
+    }
+
+    AttackMethod <|-- degree
+    AttackMethod <|-- pagerank
+    AttackMethod <|-- random
+    AttackMethod <|-- viking
+}
+' Close attack_methods package
+
+'=========================================================
+' Dataset Handling
+'=========================================================
+package "datasets" {
+    class UserDataset {
+        +__init__(root: str, transform=None, pre_transform=None, pre_filter=None, data_list=None)
+    }
+
+    class DatasetLoader {
+        +load_dataset(dataset_name: str=None, root='data') : InMemoryDataset
+        +prepare_test_set(data, percentage=0.1, seed=42) : (List[int], List[List[int]])
+        +load_user_dataset_from_files(data_dir: str, file_format='json') : UserDataset
+    }
+
+    class InMemoryDataset {
+        +data : Data
+        +slices : Any
+    }
+
+    class Data {
+        +x : torch.Tensor
+        +edge_index : torch.Tensor
+        +y : torch.Tensor
+        +train_mask : torch.Tensor
+    }
+
+    UserDataset --> DatasetLoader : uses
+}
+' Close datasets package
+
+'=========================================================
+' Evaluation
+'=========================================================
+package "evaluation" {
+    class Evaluator {
+        +__init__(search_method_before, search_method_after, k_values=[5,10,20])
+        +evaluate(queries: List[int], gold_sets: List[List[int]], results_dir='results', filename='evaluation_results.csv') : None
+        +get_all_results() : List[Dict[str, Any]]
+    }
+
+    class Metrics {
+        +hit_at_k(retrieved: List[int], gold_set: List[int], k: int) : float
+        +recall_at_k(retrieved: List[int], gold_set: List[int], k: int) : float
+        +demotion_value(before_attack_rank: int, after_attack_rank: int) : int
+    }
+
+    class Utils {
+        +save_results_to_json(results: List[Dict[str,Any]], filepath: str) : None
+        +save_results_to_csv(results: List[Dict[str,Any]], filepath: str) : None
+        +save_results_to_pickle(results: List[Dict[str,Any]], filepath: str) : None
+    }
+
+    Evaluator --> Metrics
+    Evaluator --> Utils
+}
+' Close evaluation package
+
+'=========================================================
+' Leaderboard
+'=========================================================
+package "leaderboard" {
+    class LeaderboardClient {
+        +__init__(api_url: str, api_key: str)
+        +submit_result(user_id: str, result: Any) : None
+        +get_leaderboard() : Any
+    }
+}
+' Close leaderboard package
+
+'=========================================================
+' Relationships and Notes
+'=========================================================
+' After packages are defined, define relationships:
+Evaluator --> SearchMethod
+Evaluator --> AttackMethod
+Evaluator --> Data
+
+SearchMethod --> Data
+AttackMethod --> Data
+DatasetLoader --> UserDataset
+UserDataset --> InMemoryDataset
+
+note top of UserDataset
+UserDataset: Loads and processes user-provided datasets.
+end note
+
+note top of Evaluator
+Evaluator: Compares search results before and after attack methods.
+end note
+
+note right of Metrics
+Metrics: Functions to evaluate retrieval performance and attack impact.
+end note
+
+note right of Utils
+Utils: Functions to save evaluation results (JSON, CSV, Pickle).
+end note
+
+@enduml
