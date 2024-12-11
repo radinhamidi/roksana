@@ -1,4 +1,4 @@
-# ROKSANA
+# ROKSANA: Rewiring Of Keyword Search via Alteration of Network Architecture Toolkit
 
 ROKSANA is a Python toolkit for performing keyword search and attack methods on user-provided datasets.
 
