@@ -18,7 +18,7 @@ from .search_methods import (
     SAGESearch,
 )
 from .attack_methods import (
-    AttackMethod,
+    BaseAttack,
     get_attack_method,
     ATTACK_METHODS as ATTACK_METHODS_REGISTRY,
     degree,

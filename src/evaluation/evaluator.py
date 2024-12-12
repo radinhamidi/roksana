@@ -4,7 +4,7 @@ from typing import List, Tuple, Dict, Any
 import csv
 import json
 import os
-from .metrics import hit_at_k, recall_at_k, demotion_value
+from roksana.src.evaluation.metrics import hit_at_k, recall_at_k, demotion_value
 
 class Evaluator:
     """

@@ -1,9 +1,14 @@
 # examples/example_evaluation.py
 
-from roksana.datasets import load_dataset, prepare_search_set
-from roksana.search_methods import get_search_method
-from roksana.attack_methods import get_attack_method
-from roksana.evaluation import Evaluator, save_results_to_pickle, save_results_to_json
+import sys
+import os
+import torch
+from roksana.src.search_methods.search_methods import get_search_method
+from roksana.src.datasets import load_dataset, prepare_search_set
+from roksana.src.evaluation import Evaluator, save_results_to_pickle, save_results_to_json
+from roksana.src.attack_methods import get_attack_method
+from roksana.src.utils import *
+
 
 def main():
     # Load the Cora dataset
@@ -11,21 +16,28 @@ def main():
     data = dataset[0]
 
     # Prepare the test set with 10% of nodes as queries
-    queries, gold_sets = prepare_search_set(data, percentage=0.1, seed=123)
-
+    queries, query_features, gold_sets = prepare_search_set(data, percentage=0.1, seed=123)
+    
     # Initialize the GCN search method before attack
     gcn_before = get_search_method('gcn', data=data, hidden_channels=64, epochs=200, lr=0.01)
 
     # Initialize the attack method
-    attack_method = get_attack_method('predefined_attack1', data=data, perturbations=2)
+    attacked_data = data
+    attack_method = get_attack_method('random', data=data, perturbations=2)
 
     # Perform attacks on all query nodes
     for query in queries:
-        attack_details = attack_method.attack(query_node=query, perturbations=2)
-        print(f"Attack on Node {query}: {attack_details}")
+        tensor_query = torch.tensor([[query]], device='cuda:0')
+        tensor_query = tensor_query.item()
+        tensor_query = torch.tensor(tensor_query, device='cuda:0')
+        attacked_data, removed_edge = attack_method.attack(data=attacked_data, selected_nodes=tensor_query)
+        print(f"Attack on Node: {query}. Remove edges:{removed_edge}")
+
+
+    compare_original_vs_updated(data, attacked_data)
 
     # Initialize the GCN search method after attack
-    gcn_after = get_search_method('gcn', data=data, hidden_channels=64, epochs=200, lr=0.01)
+    gcn_after = get_search_method('gcn', data=attacked_data, hidden_channels=64, epochs=200, lr=0.01)
 
     # Initialize the Evaluator
     evaluator = Evaluator(
@@ -49,3 +61,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+

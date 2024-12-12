@@ -432,13 +432,15 @@ class SAGENet(torch.nn.Module):
         x = self.conv2(x, edge_index)
         return x
 
-# Registry of search methods
+
+
 SEARCH_METHODS = {
     'gcn': GCNSearch,
     'gat': GATSearch,
     'sage': SAGESearch,
 }
 
+print("SEARCH_METHODS initialized:", SEARCH_METHODS)
 def get_search_method(name: str, data: Data, device: Optional[str] = None, **kwargs) -> SearchMethod:
     """
     Retrieve an instance of the specified search method.
@@ -455,6 +457,7 @@ def get_search_method(name: str, data: Data, device: Optional[str] = None, **kwa
     Raises:
         ValueError: If the specified search method is not supported.
     """
+    print("SEARCH_METHODS at definition:", SEARCH_METHODS)
     name = name.lower()
     if name not in SEARCH_METHODS:
         raise ValueError(f"Search method '{name}' not found. Available methods: {list(SEARCH_METHODS.keys())}")

@@ -1,6 +1,6 @@
 # roksana/attack_methods/__init__.py
 
-from .base_attack import AttackMethod
+from .base_attack import BaseAttack
 from .registry import get_attack_method, ATTACK_METHODS
 from .degree import degree
 from .pagerank import pagerank

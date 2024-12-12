@@ -1,17 +1,17 @@
 # roksana/attack_methods/registry.py
 
 from typing import Type, Dict, Any
-from .base_attack import AttackMethod
+from .base_attack import BaseAttack
 from .degree import degree
 from .pagerank import pagerank
-from .random import random
+from .random import RandomAttack
 from .viking import viking
 
 # Registry dictionary to hold attack method classes
-ATTACK_METHODS: Dict[str, Type[AttackMethod]] = {
+ATTACK_METHODS: Dict[str, Type[BaseAttack]] = {
     'degree': degree,
     'pagerank': pagerank,
-    'random': random,
+    'random': RandomAttack,
     'viking': viking,
     # Add more predefined attacks here
 }
@@ -26,14 +26,14 @@ def register_attack_method(name: str):
     Returns:
         Callable: The decorator function.
     """
-    def decorator(cls: Type[AttackMethod]):
-        if not issubclass(cls, AttackMethod):
+    def decorator(cls: Type[BaseAttack]):
+        if not issubclass(cls, BaseAttack):
             raise ValueError("Can only register subclasses of AttackMethod")
         ATTACK_METHODS[name.lower()] = cls
         return cls
     return decorator
 
-def get_attack_method(name: str, data: Any, **kwargs) -> AttackMethod:
+def get_attack_method(name: str, data: Any, **kwargs) -> BaseAttack:
     """
     Retrieve an instance of the specified attack method.
 

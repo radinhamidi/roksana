@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
-class AttackMethod(ABC):
+class BaseAttack(ABC):
     """
     Abstract base class for attack methods.
     """
