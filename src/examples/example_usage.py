@@ -22,16 +22,24 @@ def main():
     gcn_before = get_search_method('gcn', data=data, hidden_channels=64, epochs=200, lr=0.01)
 
     # Initialize the attack method
-    attacked_data = data
     attack_method = get_attack_method('random', data=data, perturbations=2)
+    attacked_data = data.clone()
 
     # Perform attacks on all query nodes
+    removed_edges_list = []
+
     for query in queries:
         tensor_query = torch.tensor([[query]], device='cuda:0')
         tensor_query = tensor_query.item()
         tensor_query = torch.tensor(tensor_query, device='cuda:0')
-        attacked_data, removed_edge = attack_method.attack(data=attacked_data, selected_nodes=tensor_query)
+        updated_data, removed_edge = attack_method.attack(data=data, selected_nodes=tensor_query)
+        removed_edges_list.append(removed_edge)
         print(f"Attack on Node: {query}. Remove edges:{removed_edge}")
+    
+    
+    # Apply all removed edges to the final data
+    for edge in removed_edges_list:
+        attacked_data = remove_edges(attacked_data, edge)
 
 
     compare_original_vs_updated(data, attacked_data)

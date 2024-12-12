@@ -17,7 +17,6 @@ class RandomAttack(BaseAttack):
         self.params = kwargs
 
     def attack(self, data, selected_nodes):
-        print("start attack per node")
         # Ensure device compatibility
 
         # Normalize selected_nodes to be a 1D tensor, even if a single node is passed
