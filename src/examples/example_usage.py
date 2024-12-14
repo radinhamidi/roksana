@@ -1,7 +1,7 @@
 """
 Graph Adversarial Attack Evaluation
 -----------------------------------
-This script evaluates the performance of a Graph search before and after applying adversarial attacks using the VikingAttack method on a dataset.
+This script evaluates the performance of a Graph search before and after applying adversarial attacks using the Attack method on a dataset.
 
 Steps:
 1. Load the Cora dataset.
