@@ -1,7 +1,7 @@
 """
 Graph Adversarial Attack Evaluation
 -----------------------------------
-This script evaluates the performance of a GCN (Graph Convolutional Network) search method before and after applying adversarial attacks using the VikingAttack method on the Cora dataset.
+This script evaluates the performance of a Graph search before and after applying adversarial attacks using the VikingAttack method on a dataset.
 
 Steps:
 1. Load the Cora dataset.
@@ -45,7 +45,7 @@ def main():
     gcn_before = get_search_method('gcn', data=data, hidden_channels=64, epochs=200, lr=0.01)
 
     # Initialize the attack method
-    attack_method = get_attack_method('pagerank', data=data, perturbations=2)
+    attack_method = get_attack_method('random', data=data, perturbations=2)
     attacked_data = data.clone()
 
     # Perform attacks on all query nodes
