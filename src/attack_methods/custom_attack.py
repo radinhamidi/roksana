@@ -1,4 +1,5 @@
-from roksana.attack_methods.base_attack import BaseAttack
+from roksana.src.attack_methods.base_attack import *
+
 
 
 '''

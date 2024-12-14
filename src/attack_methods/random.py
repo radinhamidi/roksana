@@ -4,7 +4,7 @@ from torch_geometric.utils import remove_self_loops, to_undirected
 import random
 
 
-class RandomAttack(BaseAttack):
+class RandomAttack(BaseAttack): 
     def __init__(self, data: Any, **kwargs):
         """
         Initialize the RandomAttack method.

@@ -22,7 +22,7 @@ def main():
     gcn_before = get_search_method('gcn', data=data, hidden_channels=64, epochs=200, lr=0.01)
 
     # Initialize the attack method
-    attack_method = get_attack_method('random', data=data, perturbations=2)
+    attack_method = get_attack_method('viking', data=data, perturbations=2)
     attacked_data = data.clone()
 
     # Perform attacks on all query nodes
@@ -36,11 +36,11 @@ def main():
         removed_edges_list.append(removed_edge)
         print(f"Attack on Node: {query}. Remove edges:{removed_edge}")
     
-    
-    # Apply all removed edges to the final data
+    removed_edges_list_stat(removed_edges_list)
+
+    # Apply all removed edges to the final data 
     for edge in removed_edges_list:
         attacked_data = remove_edges(attacked_data, edge)
-
 
     compare_original_vs_updated(data, attacked_data)
 

@@ -2,10 +2,10 @@
 
 from .base_attack import BaseAttack
 from .registry import get_attack_method, ATTACK_METHODS
-from .degree import degree
-from .pagerank import pagerank
-from .random import random
-from .viking import viking
+from .degree import DegreeAttack
+from .pagerank import PageRankAttack
+from .random import RandomAttack
+from .viking import VikingAttack
 
 
 __all__ = [

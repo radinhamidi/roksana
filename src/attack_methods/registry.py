@@ -2,17 +2,17 @@
 
 from typing import Type, Dict, Any
 from .base_attack import BaseAttack
-from .degree import degree
-from .pagerank import pagerank
+from .degree import DegreeAttack
+from .pagerank import PageRankAttack
 from .random import RandomAttack
-from .viking import viking
+from .viking import VikingAttack
 
 # Registry dictionary to hold attack method classes
 ATTACK_METHODS: Dict[str, Type[BaseAttack]] = {
-    'degree': degree,
-    'pagerank': pagerank,
+    'degree': DegreeAttack,
+    'pagerank': PageRankAttack,
     'random': RandomAttack,
-    'viking': viking,
+    'viking': VikingAttack,
     # Add more predefined attacks here
 }
 

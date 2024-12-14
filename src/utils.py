@@ -1,4 +1,7 @@
+
 import torch
+from collections import Counter
+
 
 def compare_original_vs_updated(original_data, updated_data):
     original_num_nodes = original_data.num_nodes
@@ -59,3 +62,21 @@ def remove_edges(data, edges_to_remove):
     # Update edge_index with the remaining edges
     data.edge_index = data.edge_index[:, mask]
     return data
+
+
+
+def removed_edges_list_stat(removed_edges_list):
+    removed_edges_list_num_edges = sum(len(edges) for edges in removed_edges_list)
+    removed_edges_list_unique_edges = len(set(tuple(sorted(edge)) for edges in removed_edges_list for edge in edges))
+
+    flattened_edges_removed_edges_list = [tuple(sorted(edge)) for edges in removed_edges_list for edge in edges]
+    edge_counts = Counter(flattened_edges_removed_edges_list)
+    duplicates = [edge for edge, count in edge_counts.items() if count > 1]
+
+
+    print(f'Number of Removed Edges in the list: {removed_edges_list_num_edges}')
+    print(f'Number of Duplicate: {duplicates}')
+    print(f'Number of Unique Edges to Remove: {removed_edges_list_unique_edges}')
+
+
+    
