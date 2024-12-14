@@ -1,10 +1,29 @@
+"""
+VikingAttack Module
+--------------------
+This module implements the VikingAttack class for adversarial attacks on graphs by perturbing edges involving selected nodes.
+
+Classes:
+    - VikingAttack: A class to perform perturbation-based edge removal attacks on a graph dataset.
+"""
+
 from .base_attack import BaseAttack
 import torch
 from torch_geometric.utils import remove_self_loops, to_undirected
-from roksana.src.attack_methods.base_attack import *
+from typing import Any, List, Tuple
 
 
 class VikingAttack(BaseAttack):
+    """
+    VikingAttack Class
+    -------------------
+    Implements an adversarial attack by perturbing edges involving specified nodes in a graph.
+
+    Attributes:
+        data (Any): The graph dataset.
+        params (dict): Additional parameters for the attack.
+    """
+
     def __init__(self, data: Any, **kwargs):
         """
         Initialize the VikingAttack method.
@@ -16,7 +35,9 @@ class VikingAttack(BaseAttack):
         self.data = data
         self.params = kwargs
 
-    def perturbation_attack(self, data, selected_nodes):
+    def perturbation_attack(
+        self, data: Any, selected_nodes: torch.Tensor
+    ) -> Tuple[torch.Tensor, List[Tuple[int, int]]]:
         """
         Perform the Viking perturbation attack by removing edges involving selected nodes.
 
@@ -25,8 +46,9 @@ class VikingAttack(BaseAttack):
             selected_nodes (torch.Tensor): Nodes to target for edge removal.
 
         Returns:
-            retained_edges (torch.Tensor): Edge index after the removal.
-            edges_to_remove (List[Tuple[int, int]]): List of removed edges.
+            Tuple[torch.Tensor, List[Tuple[int, int]]]:
+                - retained_edges (torch.Tensor): The edge index after removal of edges.
+                - edges_to_remove (List[Tuple[int, int]]): A list of removed edges.
         """
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         n_removals = len(selected_nodes)
@@ -58,7 +80,9 @@ class VikingAttack(BaseAttack):
 
         return retained_edges, edges_to_remove_list
 
-    def attack(self, data, selected_nodes):
+    def attack(
+        self, data: Any, selected_nodes: torch.Tensor
+    ) -> Tuple[Any, List[Tuple[int, int]]]:
         """
         Execute the Viking perturbation attack.
 
@@ -67,8 +91,9 @@ class VikingAttack(BaseAttack):
             selected_nodes (torch.Tensor): Nodes to target for edge removal.
 
         Returns:
-            updated_data (Any): The modified graph dataset.
-            removed_edges (List[Tuple[int, int]]): List of removed edges.
+            Tuple[Any, List[Tuple[int, int]]]:
+                - updated_data (Any): The modified graph dataset with updated edges.
+                - removed_edges (List[Tuple[int, int]]): A list of removed edges.
         """
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 

@@ -1,5 +1,17 @@
-# examples/example_evaluation.py
+"""
+Graph Adversarial Attack Evaluation
+-----------------------------------
+This script evaluates the performance of a GCN (Graph Convolutional Network) search method before and after applying adversarial attacks using the VikingAttack method on the Cora dataset.
 
+Steps:
+1. Load the Cora dataset.
+2. Prepare a search set with queries.
+3. Initialize the GCN search method and attack method.
+4. Perform adversarial attacks on selected nodes.
+5. Evaluate the performance of GCN before and after the attack.
+6. Save evaluation results to CSV, JSON, and Pickle formats.
+"""
+ 
 import sys
 import os
 import torch
@@ -11,6 +23,17 @@ from roksana.src.utils import *
 
 
 def main():
+    """
+    Main function to execute the adversarial attack evaluation workflow.
+
+    Steps:
+    - Load the dataset.
+    - Prepare a search set for evaluation.
+    - Initialize the GCN search method and VikingAttack.
+    - Perform attacks on query nodes and apply the changes to the dataset.
+    - Evaluate GCN performance before and after the attack.
+    - Save evaluation results in multiple formats.
+    """
     # Load the Cora dataset
     dataset = load_dataset(dataset_name='cora', root='data/')
     data = dataset[0]
@@ -22,7 +45,7 @@ def main():
     gcn_before = get_search_method('gcn', data=data, hidden_channels=64, epochs=200, lr=0.01)
 
     # Initialize the attack method
-    attack_method = get_attack_method('viking', data=data, perturbations=2)
+    attack_method = get_attack_method('pagerank', data=data, perturbations=2)
     attacked_data = data.clone()
 
     # Perform attacks on all query nodes
@@ -68,7 +91,11 @@ def main():
     save_results_to_pickle(results, 'evaluation_results/gcn_attack_evaluation.pkl')
 
 if __name__ == '__main__':
+    """
+    Entry point for the script. Executes the `main` function.
+    """
     main()
+
 
 
 

@@ -1,10 +1,31 @@
+"""
+RandomAttack Module
+--------------------
+This module implements the RandomAttack class for adversarial attacks on graphs by randomly removing edges 
+connected to selected nodes.
+
+Classes:
+    - RandomAttack: A class to perform random edge removal attacks on a graph dataset.
+"""
+
 from roksana.src.attack_methods.base_attack import *
 import torch
 from torch_geometric.utils import remove_self_loops, to_undirected
 import random
+from typing import Any, Tuple, List
 
 
-class RandomAttack(BaseAttack): 
+class RandomAttack(BaseAttack):
+    """
+    RandomAttack Class
+    -------------------
+    Implements an adversarial attack that randomly removes edges connected to specified nodes in a graph.
+
+    Attributes:
+        data (Any): The graph dataset.
+        params (dict): Additional parameters for the attack.
+    """
+
     def __init__(self, data: Any, **kwargs):
         """
         Initialize the RandomAttack method.
@@ -16,9 +37,20 @@ class RandomAttack(BaseAttack):
         self.data = data
         self.params = kwargs
 
-    def attack(self, data, selected_nodes):
-        # Ensure device compatibility
+    def attack(self, data: Any, selected_nodes: torch.Tensor) -> Tuple[Any, List[Tuple[int, int]]]:
+        """
+        Perform the random edge removal attack.
 
+        Args:
+            data (Any): The graph dataset.
+            selected_nodes (torch.Tensor): Nodes for which edges are to be removed. 
+                                           Can be a single node or a tensor of nodes.
+
+        Returns:
+            Tuple[Any, List[Tuple[int, int]]]: 
+                - The modified graph dataset with updated edges.
+                - A list of removed edges.
+        """
         # Normalize selected_nodes to be a 1D tensor, even if a single node is passed
         if isinstance(selected_nodes, torch.Tensor) and selected_nodes.ndimension() == 0:
             selected_nodes = selected_nodes.unsqueeze(0)

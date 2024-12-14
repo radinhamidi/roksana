@@ -1,12 +1,31 @@
+"""
+PageRankAttack Module
+----------------------
+This module implements the PageRankAttack class for adversarial attacks on graphs by selectively removing edges
+connected to nodes based on their PageRank scores.
+
+Classes:
+    - PageRankAttack: A class to perform PageRank-based edge removal attacks on a graph dataset.
+"""
+
 from .base_attack import BaseAttack
 import torch
-from torch_geometric.utils import remove_self_loops, to_undirected
+from torch_geometric.utils import remove_self_loops, to_undirected, to_networkx
 from networkx import pagerank
-from torch_geometric.utils import to_networkx
-from roksana.src.attack_methods.base_attack import *
+from typing import Any, List, Tuple
 
 
 class PageRankAttack(BaseAttack):
+    """
+    PageRankAttack Class
+    ---------------------
+    Implements an adversarial attack that removes edges connected to nodes based on their PageRank scores.
+
+    Attributes:
+        data (Any): The graph dataset.
+        params (dict): Additional parameters for the attack.
+    """
+
     def __init__(self, data: Any, **kwargs):
         """
         Initialize the PageRankAttack method.
@@ -18,17 +37,18 @@ class PageRankAttack(BaseAttack):
         self.data = data
         self.params = kwargs
 
-    def attack(self, data, selected_nodes):
+    def attack(self, data: Any, selected_nodes: torch.Tensor) -> Tuple[Any, List[Tuple[int, int]]]:
         """
         Perform the PageRank-based attack on the graph dataset.
 
         Args:
             data (Any): The graph dataset.
-            selected_nodes (torch.Tensor): Nodes to target for edge removal.
+            selected_nodes (torch.Tensor): Nodes to target for edge removal. Must be a 1D tensor.
 
         Returns:
-            updated_data (Any): The modified graph dataset.
-            removed_edges (List[Tuple[int, int]]): List of removed edges.
+            Tuple[Any, List[Tuple[int, int]]]:
+                - updated_data (Any): The modified graph dataset with updated edges.
+                - removed_edges (List[Tuple[int, int]]): A list of removed edges.
         """
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -81,6 +101,3 @@ class PageRankAttack(BaseAttack):
         updated_data.edge_index = new_edge_index
 
         return updated_data, removed_edges
-
-    
-        

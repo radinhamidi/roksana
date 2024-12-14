@@ -1,11 +1,27 @@
-# roksana/attack_methods/base_attack.py
+"""
+BaseAttack Module
+------------------
+This module provides an abstract base class for implementing graph attack methods. All attack methods must
+inherit from `BaseAttack` and implement the required methods.
+
+Classes:
+    - BaseAttack: Abstract base class for all attack methods.
+"""
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
+
 class BaseAttack(ABC):
     """
-    Abstract base class for attack methods.
+    Abstract BaseAttack Class
+    --------------------------
+    Defines the interface for attack methods. All attack methods must inherit from this class and implement
+    the `__init__` and `attack` methods.
+
+    Attributes:
+        data (Any): The graph dataset used by the attack method.
+        params (dict): Additional parameters for the attack method.
     """
 
     @abstractmethod
@@ -29,6 +45,6 @@ class BaseAttack(ABC):
             perturbations (int, optional): Number of perturbations to apply. Defaults to 1.
 
         Returns:
-            Dict[str, Any]: Details of the attack performed.
+            Dict[str, Any]: A dictionary containing details of the attack, such as removed edges or modifications made.
         """
         pass

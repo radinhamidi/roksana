@@ -1,10 +1,31 @@
+"""
+DegreeAttack Module
+--------------------
+This module implements the DegreeAttack class for adversarial attacks on graphs by selectively removing edges
+connected to nodes with the highest degree.
+
+Classes:
+    - DegreeAttack: A class to perform degree-based edge removal attacks on a graph dataset.
+"""
+
 from .base_attack import BaseAttack
 import torch
-from torch_geometric.utils import remove_self_loops, to_undirected
+from torch_geometric.utils import remove_self_loops
 from torch_geometric.utils import degree as calculate_degree
-from roksana.src.attack_methods.base_attack import *
+from typing import Any, List, Tuple
+
 
 class DegreeAttack(BaseAttack):
+    """
+    DegreeAttack Class
+    -------------------
+    Implements an adversarial attack that removes edges based on the degree of connected nodes.
+
+    Attributes:
+        data (Any): The graph dataset.
+        params (dict): Additional parameters for the attack.
+    """
+
     def __init__(self, data: Any, **kwargs):
         """
         Initialize the DegreeAttack method.
@@ -16,17 +37,18 @@ class DegreeAttack(BaseAttack):
         self.data = data
         self.params = kwargs
 
-    def attack(self, data, selected_nodes):
+    def attack(self, data: Any, selected_nodes: torch.Tensor) -> Tuple[Any, List[Tuple[int, int]]]:
         """
         Perform the degree-based attack on the graph dataset.
 
         Args:
             data (Any): The graph dataset.
-            selected_nodes (torch.Tensor): Nodes to target for edge removal.
+            selected_nodes (torch.Tensor): Nodes to target for edge removal. Must be a 1D tensor.
 
         Returns:
-            updated_data (Any): The modified graph dataset.
-            removed_edges (List[Tuple[int, int]]): List of removed edges.
+            Tuple[Any, List[Tuple[int, int]]]:
+                - updated_data (Any): The modified graph dataset with updated edges.
+                - removed_edges (List[Tuple[int, int]]): A list of removed edges.
         """
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
