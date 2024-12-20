@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ROKSANA',
-    version='0.1.0',
+    version='0.2.0',
     author='Radin Hamidi Rad',
     author_email='radin.h@gmail.com',
     description='A toolkit for keyword search and attack methods on user-provided datasets.',
@@ -20,5 +20,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.9',
 )
