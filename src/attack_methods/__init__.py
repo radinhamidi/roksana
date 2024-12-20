@@ -31,11 +31,11 @@ from .viking import VikingAttack
 
 
 __all__ = [
-    'AttackMethod',
+    'BaseAttack',
     'get_attack_method',
     'ATTACK_METHODS',
-    'degree',
-    'pagerank',
-    'random',
-    'viking',
+    'DegreeAttack',
+    'PageRankAttack',
+    'RandomAttack',
+    'VikingAttack',
 ]

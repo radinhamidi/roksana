@@ -2,9 +2,17 @@
 
 from typing import Type, Dict, Any
 from .base_search import SearchMethod
+from .gcn_search import GCNSearch
+from .gat_search import GATSearch
+from .sage_search import SAGESearch
 
 # Registry dictionary to hold search method classes
-SEARCH_METHODS: Dict[str, Type[SearchMethod]] = {}
+SEARCH_METHODS: Dict[str, Type[SearchMethod]] = {
+    'gcn': GCNSearch,
+    'gat': GATSearch,
+    'sage': SAGESearch,
+    # Add more predefined attacks here
+}
 
 def register_search_method(name: str):
     """

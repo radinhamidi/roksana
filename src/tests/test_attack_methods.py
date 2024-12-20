@@ -3,9 +3,9 @@
 import unittest
 import torch
 from torch_geometric.data import Data
-from roksana.attack_methods import (
-    PredefinedAttack1,
-    PredefinedAttack2,
+from attack_methods import (
+    degree,
+    pagerank,
     get_attack_method
 )
 
@@ -21,7 +21,7 @@ class TestAttackMethods(unittest.TestCase):
         self.data = Data(x=x, edge_index=edge_index, y=y, train_mask=train_mask)
 
     def test_predefined_attack1(self):
-        attack_method = PredefinedAttack1(data=self.data, perturbations=2)
+        attack_method = degree(data=self.data, perturbations=2)
         attack_details = attack_method.attack(query_node=1, perturbations=2)
         self.assertIn('added_edges', attack_details)
         self.assertIn('removed_edges', attack_details)
@@ -29,7 +29,7 @@ class TestAttackMethods(unittest.TestCase):
         self.assertIsInstance(attack_details['removed_edges'], list)
 
     def test_predefined_attack2(self):
-        attack_method = PredefinedAttack2(data=self.data, perturbations=1)
+        attack_method = pagerank(data=self.data, perturbations=1)
         attack_details = attack_method.attack(query_node=0, perturbations=1)
         self.assertIn('original_features', attack_details)
         self.assertIn('perturbed_features', attack_details)
@@ -40,15 +40,15 @@ class TestAttackMethods(unittest.TestCase):
         attack1 = get_attack_method('predefined_attack1', data=self.data, perturbations=2)
         attack2 = get_attack_method('predefined_attack2', data=self.data, perturbations=1)
 
-        self.assertIsInstance(attack1, PredefinedAttack1)
-        self.assertIsInstance(attack2, PredefinedAttack2)
+        self.assertIsInstance(attack1, degree)
+        self.assertIsInstance(attack2, pagerank)
 
     def test_invalid_attack_method(self):
         with self.assertRaises(ValueError):
             get_attack_method('invalid_attack', data=self.data)
 
     def test_attack_effect_on_edge_index(self):
-        attack_method = PredefinedAttack1(data=self.data, perturbations=1)
+        attack_method = degree(data=self.data, perturbations=1)
         original_edge_index = self.data.edge_index.clone()
         attack_details = attack_method.attack(query_node=1, perturbations=1)
         # Check if edges are added or removed correctly
@@ -56,7 +56,7 @@ class TestAttackMethods(unittest.TestCase):
         # Further checks can be implemented based on attack_details
 
     def test_attack_effect_on_features(self):
-        attack_method = PredefinedAttack2(data=self.data, perturbations=1)
+        attack_method = pagerank(data=self.data, perturbations=1)
         original_features = self.data.x.clone()
         attack_details = attack_method.attack(query_node=0, perturbations=1)
         # Check if the specified feature has been perturbed

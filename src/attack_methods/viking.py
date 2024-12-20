@@ -34,6 +34,8 @@ class VikingAttack(BaseAttack):
         """
         self.data = data
         self.params = kwargs
+        self.device = kwargs.get('device', torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+
 
     def perturbation_attack(
         self, data: Any, selected_nodes: torch.Tensor
@@ -50,11 +52,11 @@ class VikingAttack(BaseAttack):
                 - retained_edges (torch.Tensor): The edge index after removal of edges.
                 - edges_to_remove (List[Tuple[int, int]]): A list of removed edges.
         """
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
         n_removals = len(selected_nodes)
 
         # Move edge_index to GPU
-        edge_index = data.edge_index.to(device)
+        edge_index = data.edge_index.to(self.device)
 
         # Mask edges involving selected nodes
         mask = torch.isin(edge_index[0], selected_nodes) | torch.isin(edge_index[1], selected_nodes)
@@ -95,13 +97,12 @@ class VikingAttack(BaseAttack):
                 - updated_data (Any): The modified graph dataset with updated edges.
                 - removed_edges (List[Tuple[int, int]]): A list of removed edges.
         """
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         # Ensure selected_nodes is a 1D tensor
         if isinstance(selected_nodes, torch.Tensor) and selected_nodes.ndimension() == 0:
             selected_nodes = selected_nodes.unsqueeze(0)
 
-        selected_nodes = selected_nodes.to(device)
+        selected_nodes = selected_nodes.to(self.device)
 
         # Clone the original data
         data_copy = data.clone()

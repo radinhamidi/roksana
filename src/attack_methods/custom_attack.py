@@ -17,8 +17,8 @@ Usage:
     ----------------------------------------------------------------------
 """
 
-from roksana.src.attack_methods.base_attack import BaseAttack
-
+from .base_attack import BaseAttack
+from typing import Any
 
 class MyCustomAttack(BaseAttack):
     """

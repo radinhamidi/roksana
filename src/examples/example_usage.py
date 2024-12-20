@@ -15,11 +15,11 @@ Steps:
 import sys
 import os
 import torch
-from roksana.src.search_methods.search_methods import get_search_method
-from roksana.src.datasets import load_dataset, prepare_search_set
-from roksana.src.evaluation import Evaluator, save_results_to_pickle, save_results_to_json
-from roksana.src.attack_methods import get_attack_method
-from roksana.src.utils import *
+from roksana.search_methods.search_methods import get_search_method
+from roksana.datasets import load_dataset, prepare_search_set
+from roksana.evaluation import Evaluator, save_results_to_pickle, save_results_to_json
+from roksana.attack_methods import get_attack_method
+from roksana.utils import *
 
 
 def main():

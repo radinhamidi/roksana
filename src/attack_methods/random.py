@@ -8,7 +8,7 @@ Classes:
     - RandomAttack: A class to perform random edge removal attacks on a graph dataset.
 """
 
-from roksana.src.attack_methods.base_attack import *
+from .base_attack import BaseAttack
 import torch
 from torch_geometric.utils import remove_self_loops, to_undirected
 import random
@@ -36,6 +36,8 @@ class RandomAttack(BaseAttack):
         """
         self.data = data
         self.params = kwargs
+        self.device = kwargs.get('device', torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+
 
     def attack(self, data: Any, selected_nodes: torch.Tensor) -> Tuple[Any, List[Tuple[int, int]]]:
         """

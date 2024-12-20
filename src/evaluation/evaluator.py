@@ -4,7 +4,8 @@ from typing import List, Tuple, Dict, Any
 import csv
 import json
 import os
-from roksana.src.evaluation.metrics import hit_at_k, recall_at_k, demotion_value
+import torch
+from .metrics import hit_at_k, recall_at_k, demotion_value
 
 class Evaluator:
     """
@@ -63,16 +64,18 @@ class Evaluator:
 
             for query, gold_set in zip(queries, gold_sets):
                 # Search before attack
-                retrieved_before = self.search_before.search(
+                retrieved_before_list = self.search_before.search(
                     query_features=self.search_before.data.x[query],
                     top_k=max(self.k_values)
                 )
+                retrieved_before = retrieved_before_list[0]  # Extract the first list
 
                 # Search after attack
-                retrieved_after = self.search_after.search(
+                retrieved_after_list = self.search_after.search(
                     query_features=self.search_after.data.x[query],
                     top_k=max(self.k_values)
                 )
+                retrieved_after = retrieved_after_list[0]  # Extract the first list
 
                 # Calculate Demotion Value
                 # Find the rank of the query node in retrieved_before and retrieved_after
@@ -86,8 +89,9 @@ class Evaluator:
                 except ValueError:
                     rank_after = len(retrieved_after) + 1  # Not found
 
-                demotion = demotion_value(rank_before, rank_after)
+                demotion = rank_after - rank_before
 
+                # Compute metrics for each k
                 for k in self.k_values:
                     hit_before = hit_at_k(retrieved_before, gold_set, k)
                     hit_after = hit_at_k(retrieved_after, gold_set, k)
@@ -113,6 +117,25 @@ class Evaluator:
                         recall_after,
                         demotion
                     ])
+
+            # Compute averages
+            num_results = len(self.results)
+            avg_hit_before = sum(r['Hit@k_before_attack'] for r in self.results) / num_results
+            avg_hit_after = sum(r['Hit@k_after_attack'] for r in self.results) / num_results
+            avg_recall_before = sum(r['Recall@k_before_attack'] for r in self.results) / num_results
+            avg_recall_after = sum(r['Recall@k_after_attack'] for r in self.results) / num_results
+            avg_demotion = sum(r['Demotion_value'] for r in self.results) / num_results
+
+            # Write averages to CSV
+            writer.writerow([
+                'Average',
+                '',
+                avg_hit_before,
+                avg_hit_after,
+                avg_recall_before,
+                avg_recall_after,
+                avg_demotion
+            ])
 
         print(f"Evaluation results saved to {filepath}")
 

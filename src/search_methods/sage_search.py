@@ -136,12 +136,33 @@ class SAGESearch(SearchMethod):
             List[int]: List of node indices sorted by similarity to the query.
         """
         self.model.eval()
-        query_features = query_features.to(self.device).unsqueeze(0)  # Shape: [1, num_features]
+        query_features = query_features.to(self.device)
+
+        # Ensure query_features is 2D
+        if query_features.dim() == 1:
+            query_features = query_features.unsqueeze(0)  # Shape: [1, feature_dim]
+
         with torch.no_grad():
-            query_embedding = self.model.get_embeddings(query_features, self.data.edge_index)
-            query_embedding = query_embedding.cpu()
+            # Append query features to the node features
+            x = torch.cat([self.data.x, query_features], dim=0)
+            edge_index = self.data.edge_index
+            # Get embeddings for all nodes including the query nodes
+            embeddings = self.model.get_embeddings(x, edge_index)
+            # Number of queries
+            num_queries = query_features.size(0)
+            # Extract the query embeddings (last num_queries nodes)
+            query_embeddings = embeddings[-num_queries:]  # Shape: [num_queries, embedding_dim]
+            # Embeddings for all other nodes
+            node_embeddings = embeddings[:-num_queries]  # Shape: [num_nodes, embedding_dim]
+
+        # Normalize embeddings
+        query_embeddings = F.normalize(query_embeddings, p=2, dim=1)
+        node_embeddings = F.normalize(node_embeddings, p=2, dim=1)
+
         # Compute cosine similarity
-        similarities = F.cosine_similarity(query_embedding, self.embeddings, dim=1)
-        # Get top_k indices
-        top_k_indices = torch.topk(similarities, top_k).indices.tolist()
+        similarities = torch.mm(query_embeddings, node_embeddings.t())  # Shape: [num_queries, num_nodes]
+
+        # Get top_k indices for each query
+        top_k_indices = similarities.topk(top_k, dim=1).indices.tolist()
+
         return top_k_indices

@@ -36,6 +36,8 @@ class PageRankAttack(BaseAttack):
         """
         self.data = data
         self.params = kwargs
+        self.device = kwargs.get('device', torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+
 
     def attack(self, data: Any, selected_nodes: torch.Tensor) -> Tuple[Any, List[Tuple[int, int]]]:
         """
@@ -50,11 +52,10 @@ class PageRankAttack(BaseAttack):
                 - updated_data (Any): The modified graph dataset with updated edges.
                 - removed_edges (List[Tuple[int, int]]): A list of removed edges.
         """
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         # Move data to the appropriate device
-        original_data = data.to(device)
-        edge_index = original_data.edge_index.clone().to(device)
+        original_data = data.to(self.device)
+        edge_index = original_data.edge_index.clone().to(self.device)
         edges = edge_index.t().tolist()
 
         # Convert to a NetworkX graph for PageRank computation
@@ -65,7 +66,7 @@ class PageRankAttack(BaseAttack):
         if isinstance(selected_nodes, torch.Tensor) and selected_nodes.ndimension() == 0:
             selected_nodes = selected_nodes.unsqueeze(0)
 
-        selected_nodes = selected_nodes.to(device)
+        selected_nodes = selected_nodes.to(self.device)
 
         removed_edges = []  # List to store removed edges
 
@@ -91,13 +92,13 @@ class PageRankAttack(BaseAttack):
                 removed_edges_count += 1
 
         # Create a new edge_index tensor from the modified edges
-        new_edge_index = torch.tensor(edges, dtype=torch.long, device=device).t().contiguous()
+        new_edge_index = torch.tensor(edges, dtype=torch.long, device=self.device).t().contiguous()
 
         # Remove any self-loops
         new_edge_index, _ = remove_self_loops(new_edge_index)
 
         # Assign the modified edge_index to the dataset
-        updated_data = data.clone().to(device)
+        updated_data = data.clone().to(self.device)
         updated_data.edge_index = new_edge_index
 
         return updated_data, removed_edges
