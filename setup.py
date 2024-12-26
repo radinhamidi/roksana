@@ -11,6 +11,7 @@ setup(
     readme = 'README.md',
     url='https://github.com/radinhamidi/roksana',
     packages=find_packages(where='src'),
+    include_package_data=True,
     install_requires=[
         'torch',
         'torch-geometric',
