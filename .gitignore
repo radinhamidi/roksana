@@ -4,6 +4,5 @@ data/
 # Ignore the evaluation results folder
 evaluation_results/
 
-
 # Ignore cache folders
 __pycache__/
