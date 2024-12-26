@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ROKSANA',
-    version='0.2.1',
+    version='0.2.2',
     author='Radin Hamidi Rad',
     author_email='radin.h@gmail.com',
     description='A toolkit for keyword search and attack methods on user-provided datasets.',
