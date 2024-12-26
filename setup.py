@@ -10,7 +10,7 @@ setup(
     long_description_content_type='text/markdown',
     readme = 'README.md',
     url='https://github.com/radinhamidi/roksana',
-    packages=find_packages(),
+    packages=find_packages(where='src'),
     install_requires=[
         'torch',
         'torch-geometric',
