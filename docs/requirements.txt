@@ -1,4 +1,4 @@
-sphinx >= 5.0
+sphinx
 sphinx-autoapi
 sphinx-autobuild
 sphinx-copybutton
