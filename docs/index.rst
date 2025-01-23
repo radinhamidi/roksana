@@ -15,7 +15,11 @@ documentation for details.
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   roksana
+   roksana.datasets
+   roksana.search_methods
+   roksana.attack_methods
+   roksana.evaluation
 
 API Documentation
 =================
