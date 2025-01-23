@@ -23,3 +23,23 @@ API Documentation
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. automodule:: roksana.datasets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: roksana.search_methods
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: roksana.attack_methods
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: roksana.evaluation
+   :members:
+   :undoc-members:
+   :show-inheritance:
