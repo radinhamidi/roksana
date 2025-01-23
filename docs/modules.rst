@@ -1,7 +1,8 @@
-roksana
-=======
+ROKSANA Modules
+===============
 
-.. toctree::
-   :maxdepth: 4
+.. autosummary::
+   :toctree: generated
+   :recursive:
 
-   setup
+   roksana

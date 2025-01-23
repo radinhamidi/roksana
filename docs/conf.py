@@ -10,7 +10,7 @@ import os
 import re
 import sys
 
-sys.path.insert(0, os.path.abspath('../'))  # Ensure Sphinx can find Roksana
+sys.path.insert(0, os.path.abspath('../src'))  # Ensure Sphinx can find Roksana
 
 # Function to extract version from roksana/__init__.py
 def get_version():
@@ -52,6 +52,7 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+autosummary_generate = True  # Auto-generate API documentation
 
 
 # -- Options for HTML output -------------------------------------------------
