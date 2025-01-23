@@ -9,7 +9,6 @@
 import os
 import re
 import sys
-import roksana
 
 sys.path.insert(0, os.path.abspath('../'))  # Ensure Sphinx can find Roksana
 
