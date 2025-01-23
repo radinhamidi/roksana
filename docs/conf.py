@@ -7,15 +7,27 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 import os
+import re
 import sys
 import roksana
 
 sys.path.insert(0, os.path.abspath('../'))  # Ensure Sphinx can find Roksana
 
+# Function to extract version from roksana/__init__.py
+def get_version():
+    version_file = os.path.join(os.path.dirname(__file__), "../src/roksana/__init__.py")
+    with open(version_file, "r", encoding="utf-8") as f:
+        for line in f:
+            match = re.match(r'__version__ = ["\'](.+)["\']', line)
+            if match:
+                return match.group(1)
+    raise RuntimeError("Version not found in src/roksana/__init__.py")
+
+
 project = 'ROKSANA'
 copyright = '2024-2025, Radin Hamidi Rad'
 author = 'Radin Hamidi Rad'
-version = roksana.__version__
+version = get_version()
 release = version
 
 # -- General configuration ---------------------------------------------------

@@ -1,5 +1,7 @@
 # roksana/__init__.py
 
+__version__ = "0.2.3"
+
 from .datasets import (
     UserDataset,
     load_standard_dataset,

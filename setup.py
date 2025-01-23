@@ -1,8 +1,21 @@
 from setuptools import setup, find_packages
+import os
+import re
+
+# Read the version from roksana/__init__.py
+def get_version():
+    version_file = os.path.join(os.path.dirname(__file__), "src", "roksana", "__init__.py")
+    with open(version_file, "r", encoding="utf-8") as f:
+        for line in f:
+            match = re.match(r'__version__ = ["\'](.+)["\']', line)
+            if match:
+                return match.group(1)
+    raise RuntimeError("Version not found in roksana/__init__.py")
+
 
 setup(
     name='ROKSANA',
-    version='0.2.3',
+    version=get_version(),
     author='Radin Hamidi Rad',
     author_email='radin.h@gmail.com',
     description='A toolkit for keyword search and attack methods on user-provided datasets.',
