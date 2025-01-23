@@ -5,4 +5,3 @@ roksana
    :maxdepth: 4
 
    setup
-   tests

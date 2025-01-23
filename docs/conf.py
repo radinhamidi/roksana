@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../'))  # Ensure Sphinx can find Roksana
 
 project = 'ROKSANA'
-copyright = '2025, Radin Hamidi Rad'
+copyright = '2024-2025, Radin Hamidi Rad'
 author = 'Radin Hamidi Rad'
 release = '0.2.3'
 
@@ -22,7 +22,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',  # Google-style docstrings
     'sphinx.ext.viewcode',  # Adds links to source code
+    'sphinx_rtd_theme',
 ]
+
+html_theme = "sphinx_rtd_theme"
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
